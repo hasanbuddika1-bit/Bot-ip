@@ -2,140 +2,362 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
 <title>IP Verification</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+:root{--ok:#25d366;--warn:#f5a524;--bad:#f0483e;--blue:#3b82f6;--ink:#eef4ff;--dim:#93a3c4}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{min-height:100vh;background:radial-gradient(120% 90% at 50% 0,#13233f 0%,#0b1220 55%,#070c16 100%);
-color:#eaf0ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-display:flex;align-items:center;justify-content:center;padding:20px}
-.card{width:100%;max-width:400px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-border-radius:26px;padding:30px 22px;text-align:center;backdrop-filter:blur(14px);
-box-shadow:0 24px 60px rgba(0,0,0,.5)}
-.brand{font-size:12px;letter-spacing:2.5px;color:#7f8db0;text-transform:uppercase;margin-bottom:22px}
-.ring{width:118px;height:118px;margin:0 auto 24px;border-radius:50%;position:relative;
-display:flex;align-items:center;justify-content:center;font-size:46px}
-.ring::before{content:"";position:absolute;inset:0;border-radius:50%;
-border:3px solid rgba(255,255,255,.09)}
-.ring::after{content:"";position:absolute;inset:0;border-radius:50%;
-border:3px solid transparent;border-top-color:#3b82f6;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ok .ring::after{border-top-color:#22c55e;animation:none;border-color:#22c55e}
-.warn .ring::after{border-top-color:#f59e0b;animation:none;border-color:#f59e0b}
-.bad .ring::after{border-top-color:#ef4444;animation:none;border-color:#ef4444}
-h1{font-size:21px;margin-bottom:10px;font-weight:700}
-p{font-size:14.5px;line-height:1.65;color:#a9b6d3;margin-bottom:20px}
-.ip{display:inline-block;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.09);
-border-radius:12px;padding:9px 14px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;
-color:#dbe6ff;margin-bottom:20px;word-break:break-all;max-width:100%}
-.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;margin-bottom:12px}
-.fill{height:100%;width:6%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);
-background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
-.ok .fill{background:linear-gradient(90deg,#16a34a,#22c55e)}
-.warn .fill,.bad .fill{background:linear-gradient(90deg,#d97706,#ef4444)}
-.step{font-size:12.5px;color:#7f8db0;min-height:18px;margin-bottom:22px}
-.btn{display:block;width:100%;padding:15px;border:0;border-radius:16px;font-size:15.5px;
-font-weight:700;color:#fff;background:linear-gradient(90deg,#2563eb,#4f46e5);cursor:pointer}
-.btn.g{background:linear-gradient(90deg,#16a34a,#15803d)}
-.btn.o{background:linear-gradient(90deg,#d97706,#b45309)}
-.foot{margin-top:16px;font-size:11.5px;color:#5f6c8d;line-height:1.6}
-.hide{display:none}
+html,body{min-height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+color:var(--ink);background:#070b14;display:flex;align-items:center;justify-content:center;
+padding:calc(22px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));
+overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;
+background:radial-gradient(58% 42% at 50% -6%,rgba(59,130,246,.30),transparent 70%),
+radial-gradient(48% 38% at 88% 104%,rgba(139,92,246,.22),transparent 70%),
+radial-gradient(40% 30% at 6% 88%,rgba(37,211,102,.13),transparent 70%)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+background-size:38px 38px;
+mask-image:radial-gradient(70% 60% at 50% 40%,#000 30%,transparent 100%);
+-webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000 30%,transparent 100%)}
+.card{--accent:var(--blue);position:relative;width:100%;max-width:410px;text-align:center;
+padding:26px 20px 22px;border-radius:28px;
+background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.032));
+border:1px solid rgba(255,255,255,.11);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+box-shadow:0 30px 70px -20px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.08);
+animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.card.st-ok{--accent:var(--ok)}
+.card.st-warn{--accent:var(--warn)}
+.card.st-bad{--accent:var(--bad)}
+.brand{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10.5px;
+letter-spacing:2.6px;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:22px}
+.brand i{width:6px;height:6px;border-radius:50%;background:var(--accent);
+box-shadow:0 0 12px var(--accent);display:block;transition:background .3s}
+.orb{position:relative;width:126px;height:126px;margin:0 auto 22px;border-radius:50%;
+display:grid;place-items:center;background:rgba(255,255,255,.035)}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.075)}
+.orb .spin{position:absolute;inset:-2px;border-radius:50%;display:none;
+background:conic-gradient(from 0deg,transparent 0 62%,var(--accent) 88%,#a78bfa 100%);
+animation:rot 1.25s linear infinite;
+-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px))}
+.card.st-load .spin{display:block}
+.card.st-load .orb::after{content:"";position:absolute;inset:16px;border-radius:50%;
+background:radial-gradient(circle,rgba(59,130,246,.22),transparent 70%);
+animation:pulse 1.8s ease-in-out infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(.92);opacity:.55}50%{transform:scale(1.06);opacity:1}}
+.orb svg{width:54px;height:54px;display:none;position:relative;z-index:2}
+.card.st-ok #icoOk,.card.st-warn #icoWarn,.card.st-bad #icoBad{display:block}
+.card:not(.st-load) .orb{border:2px solid var(--accent);
+box-shadow:0 0 0 7px rgba(255,255,255,.035),0 0 42px -6px var(--accent)}
+.orb .shield{width:44px;height:44px;display:none;position:relative;z-index:2;opacity:.92}
+.card.st-load .shield,.card.st-idle .shield{display:block}
+h1{font-size:20.5px;line-height:1.3;font-weight:800;letter-spacing:-.3px;margin-bottom:9px}
+p.sub{font-size:14px;line-height:1.62;color:var(--dim);margin:0 auto 18px;max-width:330px}
+p.sub b{color:#dbe7ff;font-weight:700}
+.ipchip{display:none;align-items:center;gap:8px;justify-content:center;margin:0 auto 17px;
+padding:9px 14px;max-width:100%;width:fit-content;border-radius:13px;
+background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.1);
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#cfe0ff;
+word-break:break-all;line-height:1.4}
+.ipchip span{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto;
+box-shadow:0 0 9px var(--accent)}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.085);overflow:hidden;margin-bottom:11px}
+.fill{height:100%;width:4%;border-radius:99px;
+background:linear-gradient(90deg,var(--blue),#a78bfa);
+transition:width .55s cubic-bezier(.4,0,.2,1),background .3s}
+.card.st-ok .fill{background:linear-gradient(90deg,#16a34a,var(--ok))}
+.card.st-warn .fill{background:linear-gradient(90deg,#b45309,var(--warn))}
+.card.st-bad .fill{background:linear-gradient(90deg,#b91c1c,var(--bad))}
+.step{font-size:12.5px;color:var(--dim);min-height:17px;margin-bottom:16px;letter-spacing:.15px}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.dots i{width:22px;height:3px;border-radius:9px;background:rgba(255,255,255,.12);
+transition:background .35s}
+.dots i.on{background:var(--accent);box-shadow:0 0 10px -1px var(--accent)}
+.btn{display:block;width:100%;padding:15.5px;border:0;border-radius:16px;font-size:15px;
+font-weight:800;letter-spacing:.2px;color:#fff;cursor:pointer;
+background:linear-gradient(135deg,var(--blue),#5b53f0);
+box-shadow:0 12px 26px -12px var(--blue);transition:transform .14s,filter .2s}
+.btn:active{transform:scale(.975);filter:brightness(.93)}
+.card.st-ok .btn{background:linear-gradient(135deg,#128c3f,var(--ok));
+box-shadow:0 12px 26px -12px var(--ok)}
+.card.st-warn .btn{background:linear-gradient(135deg,#b45309,var(--warn));
+box-shadow:0 12px 26px -12px var(--warn)}
+.card.st-bad .btn{background:linear-gradient(135deg,#991b1b,var(--bad));
+box-shadow:0 12px 26px -12px var(--bad)}
+.btn[disabled]{opacity:.62;cursor:default;transform:none;filter:none}
+.btn2{display:none;width:100%;margin-top:10px;padding:13px;border-radius:15px;
+border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#c9d6f0;
+font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .14s}
+.btn2:active{transform:scale(.98);background:rgba(255,255,255,.09)}
+.foot{margin-top:15px;font-size:11.5px;line-height:1.65;color:#5d6b8a}
+.foot b{color:#8fa2c6}
+.note{display:none;margin-top:14px;padding:11px 13px;border-radius:13px;
+background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);
+font-size:12px;line-height:1.6;color:#a89a7a;text-align:left}
+.note.on{display:block}
+.note code{font-family:ui-monospace,Menlo,monospace;color:#cfe0ff}
 </style>
 </head>
 <body>
-<div class="card" id="card">
-  <div class="brand">BNB Earning Hub</div>
-  <div class="ring" id="ring">🛡️</div>
-  <h1 id="title">Verifying your IP</h1>
-  <p id="msg">Hold on — reading this device's real network address.</p>
-  <div class="ip hide" id="ip"></div>
+<div class="card st-idle" id="card">
+
+  <div class="brand"><i></i>Secure IP Check</div>
+
+  <div class="orb">
+    <div class="ring"></div>
+    <div class="spin"></div>
+
+    <svg class="shield" viewBox="0 0 24 24" fill="none" stroke="#7fa8ff" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l7 3v6c0 4.2-2.9 7.7-7 9-4.1-1.3-7-4.8-7-9V6l7-3z"/>
+      <path d="M9.2 12.1l2 2 3.6-3.9"/>
+    </svg>
+
+    <svg id="icoOk" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6.5L9.4 17.1 4 11.7"/>
+    </svg>
+
+    <svg id="icoWarn" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.6L22 20.4H2L12 3.6z"/>
+      <path d="M12 9.4v5.1"/><path d="M12 17.6h.01"/>
+    </svg>
+
+    <svg id="icoBad" viewBox="0 0 24 24" fill="none" stroke="#f0483e" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
+    </svg>
+  </div>
+
+  <h1 id="title">Verify your IP</h1>
+  <p class="sub" id="sub">Tap the button below. This device address is read once and checked.</p>
+
+  <div class="ipchip" id="chip"><span></span><code id="ip">—</code></div>
+
   <div class="bar"><div class="fill" id="fill"></div></div>
-  <div class="step" id="step">Starting…</div>
-  <button class="btn" id="act">⏳ Please wait</button>
-  <div class="foot">One IP address = one account.<br>Do not close this page.</div>
+  <div class="step" id="step">Ready</div>
+  <div class="dots" id="dots"><i></i><i></i><i></i></div>
+
+  <button class="btn" id="act">🛡️ VERIFY MY IP</button>
+  <button class="btn2" id="alt">↩️ BACK TO THE BOT</button>
+
+  <div class="note" id="note"></div>
+
+  <div class="foot">One IP address = one account.<br><b>Do not close this page.</b></div>
 </div>
+
 <script>
 var tg = (window.Telegram && Telegram.WebApp) ? Telegram.WebApp : null;
-if (tg){ try{ tg.ready(); tg.expand(); tg.setHeaderColor('#0b1220'); tg.setBackgroundColor('#0b1220'); }catch(e){} }
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#070b14'); tg.setBackgroundColor('#070b14'); } catch (e) {} }
 
-var hook = (new URLSearchParams(location.search)).get('hook') || '';
-var E = function(id){ return document.getElementById(id); };
-function buzz(t){ if(tg && tg.HapticFeedback){ try{ tg.HapticFeedback.notificationOccurred(t); }catch(e){} } }
-function prog(p, s){ E('fill').style.width = p + '%'; if(s) E('step').textContent = s; }
+var CARD  = document.getElementById('card');
+var TITLE = document.getElementById('title');
+var SUB   = document.getElementById('sub');
+var FILL  = document.getElementById('fill');
+var STEP  = document.getElementById('step');
+var ACT   = document.getElementById('act');
+var ALT   = document.getElementById('alt');
+var CHIP  = document.getElementById('chip');
+var IPBOX = document.getElementById('ip');
+var NOTE  = document.getElementById('note');
+var DOTS  = document.getElementById('dots').getElementsByTagName('i');
 
-function paint(state, icon, title, msg, btnText, btnClass){
-  E('card').className = 'card ' + state;
-  E('ring').textContent = icon;
-  E('title').textContent = title;
-  E('msg').innerHTML = msg;
-  var b = E('act'); b.textContent = btnText; b.className = 'btn ' + btnClass;
+var hook = '';
+var demo = '';
+try {
+  var qs = new URLSearchParams(location.search);
+  hook = qs.get('hook') || '';
+  demo = qs.get('demo') || '';
+} catch (e) { hook = ''; demo = ''; }
+
+var busy = false;
+
+function buzz(t) { if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.notificationOccurred(t); } catch (e) {} } }
+function dotsOn(n) { for (var i = 0; i < DOTS.length; i++) { DOTS[i].className = (i < n) ? 'on' : ''; } }
+
+function setBtn(b, label, fn, off) {
+  if (!label) { b.style.display = 'none'; b.onclick = null; b.disabled = true; return; }
+  b.style.display = 'block';
+  b.textContent = label;
+  b.onclick = fn || null;
+  b.disabled = !!off;
 }
 
-function show(d){
-  var ip = d.ip ? '<div class="ip">' + d.ip + '</div>' : '';
-  if (d.ip){ E('ip').textContent = d.ip; E('ip').classList.remove('hide'); }
-  prog(100, 'Finished');
-  var s = d.state || '';
+function show(o) {
+  CARD.className = 'card ' + (o.cls || 'st-idle');
+  TITLE.textContent = o.title || '';
+  SUB.innerHTML = o.sub || '';
+  FILL.style.width = (o.prog || 0) + '%';
+  STEP.textContent = o.step || '';
+  dotsOn(o.dots || 0);
+  if (o.ip) { IPBOX.textContent = o.ip; CHIP.style.display = 'flex'; }
+  else { CHIP.style.display = 'none'; }
+  if (o.note) { NOTE.innerHTML = o.note; NOTE.className = 'note on'; }
+  else { NOTE.innerHTML = ''; NOTE.className = 'note'; }
+  setBtn(ACT, o.btn, o.act, o.off);
+  setBtn(ALT, o.btn2, o.act2, o.off2);
+}
 
-  if (s === 'success' || s === 'already'){
-    paint('ok','✅','Verification complete',
-      'Your IP is verified and this account is unlocked.<br>Go back to the bot — it is done by itself.',
-      '✅ RETURN TO THE BOT','g');
-    buzz('success');
-    if (tg){ try{ tg.close(); }catch(e){} }
+function closeBot() {
+  if (tg && tg.close) { try { tg.close(); return; } catch (e) {} }
+  try { window.location.href = 'https://t.me'; } catch (e) {}
+}
+
+function hookOk() { return hook.indexOf('https://') === 0 && hook.indexOf(' ') === -1; }
+
+/* ---------- screens ---------- */
+
+function screenIdle() {
+  show({ cls: 'st-idle', title: 'Verify your IP',
+    sub: 'Tap the button below. This device address is read once and checked.',
+    prog: 0, step: 'Ready to start',
+    btn: '🛡️ VERIFY MY IP', act: start });
+}
+
+function screenLoading() {
+  show({ cls: 'st-load', title: 'Checking your IP',
+    sub: 'Hold on — this device address is being read and checked.',
+    prog: 12, step: 'Reading this device…', dots: 1,
+    btn: '⏳ PLEASE WAIT', off: true });
+}
+
+function screenOk(ip) {
+  buzz('success');
+  show({ cls: 'st-ok', title: 'Verification complete',
+    sub: 'Your IP is verified and this account is <b>unlocked</b>.',
+    prog: 100, step: 'Finished', dots: 3, ip: ip,
+    btn: '✅ OPEN THE BOT', act: closeBot });
+}
+
+function screenAlready(ip) {
+  buzz('success');
+  show({ cls: 'st-ok', title: 'Already verified',
+    sub: 'This account has already passed the IP check.',
+    prog: 100, step: 'Finished', dots: 3, ip: ip,
+    btn: '✅ OPEN THE BOT', act: closeBot });
+}
+
+function screenSame(ip) {
+  buzz('error');
+  show({ cls: 'st-bad', title: 'Same IP detected',
+    sub: 'This address is <b>already linked to another account</b>.<br>One IP can only be used by one account.',
+    prog: 100, step: 'Blocked', dots: 3, ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    btn2: '🔁 TRY AGAIN', act2: start,
+    note: 'If this is your own IP and you think it is a mistake, message the admin from the bot and it can be checked by hand.' });
+}
+
+function screenSuspended(ip) {
+  buzz('error');
+  show({ cls: 'st-bad', title: 'Account suspended',
+    sub: 'This account is blocked because its IP address belongs to another account.',
+    prog: 100, step: 'Blocked', dots: 3, ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    note: 'A suspended account cannot receive rewards. Contact the admin if this is wrong.' });
+}
+
+function screenLocal(ip) {
+  buzz('warning');
+  show({ cls: 'st-warn', title: 'Mobile data needed',
+    sub: 'A <b>private network address</b> was detected. Turn off Wi-Fi, switch on mobile data, then try again.',
+    prog: 100, step: 'Try again on mobile data', dots: 3, ip: ip,
+    btn: '🔁 TRY AGAIN', act: start,
+    btn2: '↩️ BACK TO THE BOT', act2: closeBot,
+    note: 'Wi-Fi hides your real address behind a router. Mobile data gives an address that can be verified.' });
+}
+
+function screenNoIp() {
+  buzz('error');
+  show({ cls: 'st-warn', title: 'IP not detected',
+    sub: 'The bot server did not receive this device address. Try again on mobile data.',
+    prog: 100, step: 'Not detected', dots: 3,
+    btn: '🔁 TRY AGAIN', act: start,
+    btn2: '↩️ BACK TO THE BOT', act2: closeBot });
+}
+
+function screenError() {
+  show({ cls: 'st-warn', title: 'Open this from the bot',
+    sub: 'This page only works when it is opened from the <b>Verify my IP</b> button inside the bot.',
+    prog: 0, step: 'Stopped',
+    btn: '🔁 TRY AGAIN', act: start });
+}
+
+function screenSent() {
+  show({ cls: 'st-warn', title: 'Request sent',
+    sub: 'Your details reached the bot. <b>Go back to Telegram</b> — the result is confirmed there.',
+    prog: 100, step: 'Waiting for the bot', dots: 3,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    btn2: '🔁 TRY AGAIN', act2: start,
+    note: 'This page cannot always read the answer of the server, so the final result is always sent to you in the bot.' });
+}
+
+/* ---------- state router ---------- */
+
+function render(st, ip, done, ver) {
+  var okflag = (String(done || '') === '1') || (String(ver || '') === '1');
+  if (st === 'success') { if (okflag) { screenOk(ip); } else { screenSame(ip); } return; }
+  if (st === 'already') { screenAlready(ip); return; }
+  if (st === 'taken') { screenSame(ip); return; }
+  if (st === 'suspended') { screenSuspended(ip); return; }
+  if (st === 'local_ip') { screenLocal(ip); return; }
+  if (st === 'no_ip') { screenNoIp(); return; }
+  screenError();
+}
+
+/* ---------- the button does the work ---------- */
+
+function start() {
+  if (busy) { return; }
+  busy = true;
+  buzz('light');
+  screenLoading();
+
+  if (demo) {
+    setTimeout(function () {
+      busy = false;
+      if (demo === 'error') { screenError(); return; }
+      var dip = (demo === 'local_ip') ? '192.168.1.24' : '103.94.132.17';
+      var dd = (demo === 'success') ? '1' : '';
+      render(demo, dip, dd, '');
+    }, 850);
     return;
   }
-  if (s === 'taken' || s === 'suspended'){
-    paint('bad','⚠️','IP already used',
-      'This IP address is already linked to another account.<br>The bot has been notified.',
-      '❌ CONTACT THE ADMIN','o');
-    buzz('error'); return;
-  }
-  if (s === 'local_ip'){
-    paint('warn','📶','Private network',
-      'A local address was detected. Turn off Wi-Fi, use mobile data and try again.',
-      '🔁 TRY AGAIN','o');
-    E('act').onclick = function(){ location.reload(); }; buzz('warning'); return;
-  }
-  paint('warn','❔','Not detected',
-    (d.message || 'The server could not read this device address.'),
-    '🔁 TRY AGAIN','o');
-  E('act').onclick = function(){ location.reload(); }; buzz('error');
+
+  if (!hookOk()) { busy = false; screenError(); return; }
+
+  fetch(hook + (hook.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      FILL.style.width = '70%';
+      STEP.textContent = 'Checking this IP…';
+      dotsOn(2);
+      var d = null;
+      try { d = JSON.parse(txt); } catch (e) { d = null; }
+      busy = false;
+      if (d && d.state) { render(d.state, d.ip, d.done, d.verified); }
+      else { pingOnly(); }
+    })
+    .catch(function () { busy = false; pingOnly(); });
 }
 
-function optimistic(){
-  prog(100,'Finished');
-  paint('ok','✅','IP captured',
-    'Your address was read and sent to the bot.<br>Verification is now complete.',
-    '✅ RETURN TO THE BOT','g');
-  buzz('success');
+function pingOnly() {
+  if (!hookOk()) { screenError(); return; }
+  try {
+    var im = new Image();
+    im.src = hook + (hook.indexOf('?') > -1 ? '&' : '?') + 'p=' + Date.now();
+  } catch (e) {}
+  screenSent();
 }
 
-function fail(t){
-  prog(100,'Stopped');
-  paint('bad','⚠️','Cannot run', t, '🔁 TRY AGAIN','o');
-  E('act').onclick = function(){ location.reload(); };
-}
-
-async function run(){
-  if (!hook){ fail('This page was not opened from the bot. Open <b>Verify my IP</b> inside the bot.'); return; }
-  prog(22,'Reading network…');
-  try{
-    var r = await fetch(hook, {method:'GET', cache:'no-store'});
-    prog(66,'Checking this IP…');
-    var txt = await r.text();
-    var d = null; try{ d = JSON.parse(txt); }catch(e){ d = null; }
-    if (d && d.state){ show(d); return; }
-    optimistic();
-  }catch(e){
-    prog(55,'Sending request…');
-    try{ var f = document.createElement('iframe'); f.style.display='none'; f.src = hook; document.body.appendChild(f); }catch(e2){}
-    setTimeout(function(){ prog(88,'Confirming…'); setTimeout(optimistic, 1200); }, 1200);
-  }
-}
-prog(8,'Starting…');
-run();
+screenIdle();
 </script>
 </body>
   </html>
