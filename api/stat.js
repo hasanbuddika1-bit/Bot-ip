@@ -1,20 +1,29 @@
+const ALLOW = /\.telebotcreator\.com$/;
+
+function safe(u) {
+  try {
+    const x = new URL(String(u));
+    return x.protocol === 'https:' && ALLOW.test(x.hostname);
+  } catch (e) { return false; }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
   const target = req.query.u;
-  if (!target || !/^https:\/\//.test(String(target))) {
-    return res.status(200).json({ ok: false, state: '', error: 'bad-target' });
+  if (!safe(target)) {
+    return res.status(400).json({ ok: false, state: '', error: 'bad-target' });
   }
 
   try {
     const ac = new AbortController();
-    const timer = setTimeout(() => ac.abort(), 4000);
+    const t = setTimeout(() => ac.abort(), 5000);
     const r = await fetch(String(target), { signal: ac.signal, cache: 'no-store' });
-    clearTimeout(timer);
+    clearTimeout(t);
     const txt = await r.text();
     res.setHeader('Content-Type', 'application/json');
-    return res.status(200).send(txt);
+    return res.status(200).send(txt || '{"ok":false,"state":""}');
   } catch (e) {
     return res.status(200).json({ ok: false, state: '', error: 'upstream' });
   }
