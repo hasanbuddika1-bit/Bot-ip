@@ -9,219 +9,398 @@
 <style>
 :root{--ok:#25d366;--warn:#f5a524;--bad:#f0483e;--blue:#3b82f6;--ink:#eef4ff;--dim:#93a3c4}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;color:var(--ink);
-background:#070b14;display:flex;align-items:center;justify-content:center;min-height:100vh;
-padding:calc(22px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;
-background:radial-gradient(58% 42% at 50% -6%,rgba(59,130,246,.30),transparent 70%),
-radial-gradient(48% 38% at 88% 104%,rgba(139,92,246,.22),transparent 70%),
-radial-gradient(40% 30% at 6% 88%,rgba(37,211,102,.13),transparent 70%)}
-.card{--accent:var(--blue);position:relative;width:100%;max-width:410px;text-align:center;padding:26px 20px 22px;
-border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.032));
-border:1px solid rgba(255,255,255,.11);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-box-shadow:0 30px 70px -20px rgba(0,0,0,.85);animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+html,body{min-height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  color:var(--ink);background:#070b14;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(22px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(58% 42% at 50% -6%,rgba(59,130,246,.30),transparent 70%),
+    radial-gradient(48% 38% at 88% 104%,rgba(139,92,246,.22),transparent 70%),
+    radial-gradient(40% 30% at 6% 88%,rgba(37,211,102,.13),transparent 70%);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:38px 38px;
+  mask-image:radial-gradient(70% 60% at 50% 40%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000 30%,transparent 100%);
+}
+.card{
+  --accent:var(--blue);
+  position:relative;width:100%;max-width:410px;text-align:center;
+  padding:26px 20px 22px;border-radius:28px;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.032));
+  border:1px solid rgba(255,255,255,.11);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:rise .4s cubic-bezier(.2,.8,.2,1) both;
+}
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
-.card.st-ok{--accent:var(--ok)}.card.st-warn{--accent:var(--warn)}.card.st-bad{--accent:var(--bad)}
-.brand{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10.5px;letter-spacing:2.6px;
-text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:22px}
-.brand i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-.orb{position:relative;width:120px;height:120px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;
-background:rgba(255,255,255,.035)}
+.card.st-ok{--accent:var(--ok)}
+.card.st-warn{--accent:var(--warn)}
+.card.st-bad{--accent:var(--bad)}
+.brand{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:10.5px;letter-spacing:2.6px;text-transform:uppercase;
+  color:var(--dim);font-weight:700;margin-bottom:22px;
+}
+.brand i{width:6px;height:6px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 12px var(--accent);display:block;transition:background .3s}
+.orb{position:relative;width:120px;height:120px;margin:0 auto 22px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,255,255,.035)}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.075)}
 .orb .spin{position:absolute;inset:-2px;border-radius:50%;display:none;
-background:conic-gradient(from 0deg,transparent 0 62%,var(--accent) 88%,#a78bfa 100%);animation:rot .95s linear infinite;
--webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px))}
+  background:conic-gradient(from 0deg,transparent 0 62%,var(--accent) 88%,#a78bfa 100%);
+  animation:rot .95s linear infinite;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));}
 .card.st-load .spin{display:block}
 @keyframes rot{to{transform:rotate(360deg)}}
 .orb svg{width:52px;height:52px;display:none;position:relative;z-index:2}
 .card.st-ok #icoOk,.card.st-warn #icoWarn,.card.st-bad #icoBad{display:block}
-.card:not(.st-load) .orb{border:2px solid var(--accent);box-shadow:0 0 0 7px rgba(255,255,255,.035),0 0 40px -6px var(--accent)}
+.card:not(.st-load) .orb{border:2px solid var(--accent);
+  box-shadow:0 0 0 7px rgba(255,255,255,.035),0 0 40px -6px var(--accent)}
 .orb .shield{width:42px;height:42px;display:none;position:relative;z-index:2;opacity:.92}
 .card.st-load .shield,.card.st-idle .shield{display:block}
 h1{font-size:20px;line-height:1.3;font-weight:800;letter-spacing:-.3px;margin-bottom:9px}
 p.sub{font-size:14px;line-height:1.6;color:var(--dim);margin:0 auto 18px;max-width:330px}
-p.sub b{color:#dbe7ff}
-.ipchip{display:none;align-items:center;gap:8px;justify-content:center;margin:0 auto 16px;padding:9px 14px;
-border-radius:13px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.1);
-font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#cfe0ff;word-break:break-all;line-height:1.4}
-.ipchip span{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+p.sub b{color:#dbe7ff;font-weight:700}
+.ipchip{display:none;align-items:center;gap:8px;justify-content:center;
+  margin:0 auto 16px;padding:9px 14px;max-width:100%;width:fit-content;
+  border-radius:13px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.1);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
+  color:#cfe0ff;word-break:break-all;line-height:1.4}
+.ipchip span{width:6px;height:6px;border-radius:50%;background:var(--accent);
+  flex:0 0 auto;box-shadow:0 0 9px var(--accent)}
 .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.085);overflow:hidden;margin-bottom:11px}
-.fill{height:100%;width:4%;border-radius:99px;background:linear-gradient(90deg,var(--blue),#a78bfa);transition:width .25s}
+.fill{height:100%;width:4%;border-radius:99px;
+  background:linear-gradient(90deg,var(--blue),#a78bfa);
+  transition:width .25s cubic-bezier(.4,0,.2,1),background .3s}
 .card.st-ok .fill{background:linear-gradient(90deg,#16a34a,var(--ok))}
 .card.st-warn .fill{background:linear-gradient(90deg,#b45309,var(--warn))}
 .card.st-bad .fill{background:linear-gradient(90deg,#b91c1c,var(--bad))}
-.step{font-size:12.5px;color:var(--dim);min-height:17px;margin-bottom:16px}
-.btn{display:block;width:100%;padding:15.5px;border:0;border-radius:16px;font-size:15px;font-weight:800;color:#fff;
-cursor:pointer;background:linear-gradient(135deg,var(--blue),#5b53f0);box-shadow:0 12px 26px -12px var(--blue);
-transition:transform .14s}
-.btn:active{transform:scale(.975)}
-.card.st-ok .btn{background:linear-gradient(135deg,#128c3f,var(--ok))}
-.card.st-warn .btn{background:linear-gradient(135deg,#b45309,var(--warn))}
-.card.st-bad .btn{background:linear-gradient(135deg,#991b1b,var(--bad))}
-.btn[disabled]{opacity:.62;cursor:default}
-.btn2{display:none;width:100%;margin-top:10px;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.14);
-background:rgba(255,255,255,.05);color:#c9d6f0;font-size:13.5px;font-weight:700;cursor:pointer}
-.note{display:none;margin-top:14px;padding:11px 13px;border-radius:13px;background:rgba(0,0,0,.3);
-border:1px solid rgba(255,255,255,.08);font-size:12px;line-height:1.6;color:#a89a7a;text-align:left}
+.step{font-size:12.5px;color:var(--dim);min-height:17px;margin-bottom:16px;letter-spacing:.15px}
+.btn{display:block;width:100%;padding:15.5px;border:0;border-radius:16px;
+  font-size:15px;font-weight:800;letter-spacing:.2px;color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),#5b53f0);
+  box-shadow:0 12px 26px -12px var(--blue);transition:transform .14s,filter .2s}
+.btn:active{transform:scale(.975);filter:brightness(.93)}
+.card.st-ok .btn{background:linear-gradient(135deg,#128c3f,var(--ok));
+  box-shadow:0 12px 26px -12px var(--ok)}
+.card.st-warn .btn{background:linear-gradient(135deg,#b45309,var(--warn));
+  box-shadow:0 12px 26px -12px var(--warn)}
+.card.st-bad .btn{background:linear-gradient(135deg,#991b1b,var(--bad));
+  box-shadow:0 12px 26px -12px var(--bad)}
+.btn[disabled]{opacity:.62;cursor:default;transform:none;filter:none}
+.btn2{display:none;width:100%;margin-top:10px;padding:13px;border-radius:15px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);
+  color:#c9d6f0;font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .14s}
+.btn2:active{transform:scale(.98);background:rgba(255,255,255,.09)}
+.note{display:none;margin-top:14px;padding:11px 13px;border-radius:13px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);
+  font-size:12px;line-height:1.6;color:#a89a7a;text-align:left}
 .note.on{display:block}
-.foot{margin-top:15px;font-size:11.5px;line-height:1.6;color:#5d6b8a}
+.foot{margin-top:15px;font-size:11.5px;line-height:1.65;color:#5d6b8a}
+.foot b{color:#8fa2c6}
 </style>
 </head>
 <body>
 <div class="card st-idle" id="card">
+
   <div class="brand"><i></i>BNB Earning Hub</div>
-  <div class="orb"><div class="spin"></div>
-    <svg class="shield" viewBox="0 0 24 24" fill="none" stroke="#7fa8ff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.7-7 9-4.1-1.3-7-4.8-7-9V6l7-3z"/><path d="M9.2 12.1l2 2 3.6-3.9"/></svg>
-    <svg id="icoOk" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6.5L9.4 17.1 4 11.7"/></svg>
-    <svg id="icoWarn" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6L22 20.4H2L12 3.6z"/><path d="M12 9.4v5.1"/><path d="M12 17.6h.01"/></svg>
-    <svg id="icoBad" viewBox="0 0 24 24" fill="none" stroke="#f0483e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+
+  <div class="orb">
+    <div class="ring"></div>
+    <div class="spin"></div>
+
+    <svg class="shield" viewBox="0 0 24 24" fill="none" stroke="#7fa8ff" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l7 3v6c0 4.2-2.9 7.7-7 9-4.1-1.3-7-4.8-7-9V6l7-3z"/>
+      <path d="M9.2 12.1l2 2 3.6-3.9"/>
+    </svg>
+
+    <svg id="icoOk" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6.5L9.4 17.1 4 11.7"/>
+    </svg>
+
+    <svg id="icoWarn" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.6L22 20.4H2L12 3.6z"/>
+      <path d="M12 9.4v5.1"/><path d="M12 17.6h.01"/>
+    </svg>
+
+    <svg id="icoBad" viewBox="0 0 24 24" fill="none" stroke="#f0483e" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
+    </svg>
   </div>
+
   <h1 id="title">Verify your IP</h1>
   <p class="sub" id="sub">Tap the button below. This device address is read once and checked.</p>
+
   <div class="ipchip" id="chip"><span></span><code id="ip">—</code></div>
+
   <div class="bar"><div class="fill" id="fill"></div></div>
   <div class="step" id="step">Ready</div>
+
   <button class="btn" id="act">🛡️ VERIFY MY IP</button>
   <button class="btn2" id="alt">↩️ BACK TO THE BOT</button>
+
   <div class="note" id="note"></div>
+
   <div class="foot">One IP address = one account.<br>One device = one account.</div>
 </div>
 
 <script>
-var tg=(window.Telegram&&Telegram.WebApp)?Telegram.WebApp:null;
-if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#070b14');tg.setBackgroundColor('#070b14');}catch(e){}}
+var tg = (window.Telegram && Telegram.WebApp) ? Telegram.WebApp : null;
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#070b14'); tg.setBackgroundColor('#070b14'); } catch (e) {} }
 
-var $=function(i){return document.getElementById(i)};
-var CARD=$('card'),TITLE=$('title'),SUB=$('sub'),FILL=$('fill'),STEP=$('step'),
-    ACT=$('act'),ALT=$('alt'),CHIP=$('chip'),IPBOX=$('ip'),NOTE=$('note');
+var $ = function (i) { return document.getElementById(i); };
+var CARD = $('card'), TITLE = $('title'), SUB = $('sub'), FILL = $('fill'), STEP = $('step'),
+    ACT = $('act'), ALT = $('alt'), CHIP = $('chip'), IPBOX = $('ip'), NOTE = $('note');
 
-var qs={};try{qs=Object.fromEntries(new URLSearchParams(location.search).entries())}catch(e){qs={}}
-var hook=String(qs.hook||''), stat=String(qs.stat||''), demo=String(qs.demo||'');
-var busy=false,tries=0,timer=null,lastIp='',t0=0;
+var qs = {};
+try { qs = Object.fromEntries(new URLSearchParams(location.search).entries()); } catch (e) { qs = {}; }
+var hook = String(qs.hook || '');
+var stat = String(qs.stat || '');
+var demo = String(qs.demo || '');
 
-function devToken(){
-  var k='hub_dev_id',v='';
-  try{v=localStorage.getItem(k)||''}catch(e){v=''}
-  if(v&&v.length>=16)return v;
-  var s='',c='abcdefghijklmnopqrstuvwxyz0123456789';
-  if(window.crypto&&crypto.getRandomValues){
-    var a=new Uint8Array(24);crypto.getRandomValues(a);
-    for(var i=0;i<24;i++)s+=c.charAt(a[i]%36);
-  }else{for(var j=0;j<32;j++)s+=c.charAt(Math.floor(Math.random()*36))}
-  try{localStorage.setItem(k,s)}catch(e){}
+var busy = false, timer = null;
+
+/* ---------- device token ---------- */
+function devToken() {
+  var k = 'hub_dev_id', v = '';
+  try { v = localStorage.getItem(k) || ''; } catch (e) { v = ''; }
+  if (v && v.length >= 16) { return v; }
+  var s = '', c = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  if (window.crypto && crypto.getRandomValues) {
+    var a = new Uint8Array(24);
+    crypto.getRandomValues(a);
+    for (var i = 0; i < 24; i++) { s += c.charAt(a[i] % 36); }
+  } else {
+    for (var j = 0; j < 32; j++) { s += c.charAt(Math.floor(Math.random() * 36)); }
+  }
+  try { localStorage.setItem(k, s); } catch (e) {}
   return s;
 }
-var DEV=devToken();
+var DEV = devToken();
 
-/* Last resort only: the same-origin /api/stat is used first and is fast. */
-var FALLBACK=[
- function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u)},
- function(u){return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u)}
-];
+/* ---------- ui helpers ---------- */
+function buzz(t) { if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.notificationOccurred(t); } catch (e) {} } }
 
-function buzz(t){if(tg&&tg.HapticFeedback){try{tg.HapticFeedback.notificationOccurred(t)}catch(e){}}}
-function setBtn(b,l,fn,off){if(!l){b.style.display='none';b.onclick=null;b.disabled=true;return}
- b.style.display='block';b.textContent=l;b.onclick=fn||null;b.disabled=!!off}
-function show(o){
- CARD.className='card '+(o.cls||'st-idle');TITLE.textContent=o.title||'';SUB.innerHTML=o.sub||'';
- FILL.style.width=(o.prog||0)+'%';STEP.textContent=o.step||'';
- if(o.ip){IPBOX.textContent=o.ip;CHIP.style.display='flex'}else{CHIP.style.display='none'}
- if(o.note){NOTE.innerHTML=o.note;NOTE.className='note on'}else{NOTE.innerHTML='';NOTE.className='note'}
- setBtn(ACT,o.btn,o.act,o.off);setBtn(ALT,o.btn2,o.act2,o.off2)}
-function closeBot(){if(tg&&tg.close){try{tg.close();return}catch(e){}}try{location.href='https://t.me'}catch(e){}}
-function okUrl(u){return u.indexOf('https://')===0&&u.indexOf(' ')===-1}
-
-function idle(){show({cls:'st-idle',title:'Verify your IP',
- sub:'Tap the button below. This device address is read once and checked.',
- prog:0,step:'Ready to start',btn:'🛡️ VERIFY MY IP',act:start})}
-function load(s){show({cls:'st-load',title:'Checking your IP',
- sub:'Hold on — this takes a second.',
- prog:30,step:s||'Reading this device…',btn:'⏳ PLEASE WAIT',off:true})}
-function ok(ip){buzz('success');show({cls:'st-ok',title:'Verification complete',
- sub:'Your IP is verified and this account is <b>unlocked</b>.',
- prog:100,step:'Finished',ip:ip,btn:'✅ OPEN THE BOT',act:closeBot})}
-function already(ip){buzz('success');show({cls:'st-ok',title:'Already verified',
- sub:'This account has already passed the IP check.',
- prog:100,step:'Finished',ip:ip,btn:'✅ OPEN THE BOT',act:closeBot})}
-function same(ip){buzz('error');show({cls:'st-bad',title:'Same IP detected',
- sub:'This address is <b>already linked to another account</b>.<br>One IP can only be used by one account.',
- prog:100,step:'Blocked',ip:ip,btn:'↩️ BACK TO THE BOT',act:closeBot,btn2:'🔁 TRY AGAIN',act2:start,
- note:'If this is your own IP and you think it is a mistake, message the admin from the bot.'})}
-function devTaken(ip){buzz('error');show({cls:'st-bad',title:'Multiple accounts detected',
- sub:'This device has already been used by <b>another account</b>.',
- prog:100,step:'Blocked',ip:ip,btn:'↩️ BACK TO THE BOT',act:closeBot,
- note:'For security this account cannot be verified on this device. Ask the admin to release the device.'})}
-function susp(ip){buzz('error');show({cls:'st-bad',title:'Account suspended',
- sub:'This account is blocked because its IP address belongs to another account.',
- prog:100,step:'Blocked',ip:ip,btn:'↩️ BACK TO THE BOT',act:closeBot,
- note:'A suspended account cannot receive rewards. Contact the admin if this is wrong.'})}
-function local(ip){buzz('warning');show({cls:'st-warn',title:'Mobile data needed',
- sub:'A <b>private network address</b> was detected. Turn off Wi-Fi, switch on mobile data, then try again.',
- prog:100,step:'Try again on mobile data',ip:ip,btn:'🔁 TRY AGAIN',act:start,btn2:'↩️ BACK TO THE BOT',act2:closeBot,
- note:'Wi-Fi hides your real address behind a router.'})}
-function noIp(){buzz('error');show({cls:'st-warn',title:'IP not detected',
- sub:'The bot server did not receive this device address. Try again on mobile data.',
- prog:100,step:'Not detected',btn:'🔁 TRY AGAIN',act:start,btn2:'↩️ BACK TO THE BOT',act2:closeBot})}
-function noLink(){show({cls:'st-warn',title:'Open this from the bot',
- sub:'This page only works when it is opened from the <b>Verify my IP</b> button inside the bot.',
- prog:0,step:'Stopped',btn:'🔁 TRY AGAIN',act:start})}
-function blind(){show({cls:'st-warn',title:'Request sent',
- sub:'The bot received your details. <b>Check the bot</b> for the result.',
- prog:100,step:'Waiting for the bot',ip:lastIp,btn:'↩️ BACK TO THE BOT',act:closeBot,btn2:'🔁 TRY AGAIN',act2:start,
- note:'The request was sent. The bot always tells you the result in Telegram.'})}
-
-function render(st,ip,done,ver){
- var f=(String(done||'')==='1')||(String(ver||'')==='1');
- if(st==='success'){f?ok(ip):same(ip);return}
- if(st==='already'){already(ip);return}
- if(st==='taken'){same(ip);return}
- if(st==='device_taken'){devTaken(ip);return}
- if(st==='suspended'){susp(ip);return}
- if(st==='local_ip'){local(ip);return}
- if(st==='no_ip'){noIp();return}
- if(st===''){return}
- noLink()}
-
-function fire(){
- var u=hook+(hook.indexOf('?')>-1?'&':'?')+'t='+Date.now()+'&dev='+encodeURIComponent(DEV);
- try{fetch(u,{mode:'no-cors',cache:'no-store'})}catch(e){try{var im=new Image();im.src=u}catch(e2){}}}
-
-/* Same-origin function first: no CORS, no third party, one round trip. */
-function urlFor(i){
- var target=stat+(stat.indexOf('?')>-1?'&':'?')+'r='+Date.now();
- if(i===0)return '/api/stat?u='+encodeURIComponent(target);
- return FALLBACK[(i-1)%FALLBACK.length](target);
+function setBtn(b, label, fn, off) {
+  if (!label) { b.style.display = 'none'; b.onclick = null; b.disabled = true; return; }
+  b.style.display = 'block';
+  b.textContent = label;
+  b.onclick = fn || null;
+  b.disabled = !!off;
 }
 
-function poll(){
- tries++;
- var ms=Date.now()-t0;
- load('Checking… ' + (ms/1000).toFixed(1) + 's');
- FILL.style.width=Math.min(35+tries*14,94)+'%';
- if(!okUrl(stat)||tries>10){blind();return}
+function show(o) {
+  CARD.className = 'card ' + (o.cls || 'st-idle');
+  TITLE.textContent = o.title || '';
+  SUB.innerHTML = o.sub || '';
+  FILL.style.width = (o.prog || 0) + '%';
+  STEP.textContent = o.step || '';
+  if (o.ip) { IPBOX.textContent = o.ip; CHIP.style.display = 'flex'; }
+  else { CHIP.style.display = 'none'; }
+  if (o.note) { NOTE.innerHTML = o.note; NOTE.className = 'note on'; }
+  else { NOTE.innerHTML = ''; NOTE.className = 'note'; }
+  setBtn(ACT, o.btn, o.act, o.off);
+  setBtn(ALT, o.btn2, o.act2, o.off2);
+}
 
- fetch(urlFor(tries-1),{cache:'no-store'})
-  .then(function(r){return r.text()})
-  .then(function(txt){
-    var d=null;try{d=JSON.parse(txt)}catch(e){d=null}
-    if(d&&typeof d.state!=='undefined'&&d.state!==''){
-      busy=false;render(d.state,d.ip,d.done,d.verified);return}
-    timer=setTimeout(poll,200)})
-  .catch(function(){timer=setTimeout(poll,220)})}
+function closeBot() {
+  if (tg && tg.close) { try { tg.close(); return; } catch (e) {} }
+  try { window.location.href = 'https://t.me'; } catch (e) {}
+}
 
-function start(){
- if(busy)return;busy=true;tries=0;t0=Date.now();
- if(timer)clearTimeout(timer);buzz('light');
+function okUrl(u) { return u.indexOf('https://') === 0 && u.indexOf(' ') === -1; }
 
- if(demo){load();setTimeout(function(){busy=false;
-   var ip=demo==='local_ip'?'192.168.1.24':'103.94.132.17';
-   if(demo==='error'){noLink();return}
-   render(demo,ip,demo==='success'?'1':'0','')},500);return}
+/* ---------- screens ---------- */
+function idle() {
+  show({ cls: 'st-idle', title: 'Verify your IP',
+    sub: 'Tap the button below. This device address is read once and checked.',
+    prog: 0, step: 'Ready to start', btn: '🛡️ VERIFY MY IP', act: start });
+}
 
- if(!okUrl(hook)){busy=false;noLink();return}
- load('Reading this device…');
- fire();
- timer=setTimeout(poll,180)}
+function load(s) {
+  show({ cls: 'st-load', title: 'Checking your IP',
+    sub: 'Hold on — this takes a second.',
+    prog: 35, step: s || 'Reading this device…', btn: '⏳ PLEASE WAIT', off: true });
+}
+
+function ok(ip) {
+  buzz('success');
+  show({ cls: 'st-ok', title: 'Verification complete',
+    sub: 'Your IP is verified and this account is <b>unlocked</b>.',
+    prog: 100, step: 'Finished', ip: ip, btn: '✅ OPEN THE BOT', act: closeBot });
+}
+
+function already(ip) {
+  buzz('success');
+  show({ cls: 'st-ok', title: 'Already verified',
+    sub: 'This account has already passed the IP check.',
+    prog: 100, step: 'Finished', ip: ip, btn: '✅ OPEN THE BOT', act: closeBot });
+}
+
+function same(ip) {
+  buzz('error');
+  show({ cls: 'st-bad', title: 'Same IP detected',
+    sub: 'This address is <b>already linked to another account</b>.<br>One IP can only be used by one account.',
+    prog: 100, step: 'Blocked', ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    btn2: '🔁 TRY AGAIN', act2: start,
+    note: 'If this is your own IP and you think it is a mistake, message the admin from the bot.' });
+}
+
+function devTaken(ip) {
+  buzz('error');
+  show({ cls: 'st-bad', title: 'Multiple accounts detected',
+    sub: 'This device has already been used by <b>another account</b>.',
+    prog: 100, step: 'Blocked', ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    note: 'For security this account cannot be verified on this device. Ask the admin to release the device.' });
+}
+
+function susp(ip) {
+  buzz('error');
+  show({ cls: 'st-bad', title: 'Account suspended',
+    sub: 'This account is blocked because its IP address belongs to another account.',
+    prog: 100, step: 'Blocked', ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    note: 'A suspended account cannot receive rewards. Contact the admin if this is wrong.' });
+}
+
+function local(ip) {
+  buzz('warning');
+  show({ cls: 'st-warn', title: 'Mobile data needed',
+    sub: 'A <b>private network address</b> was detected. Turn off Wi-Fi, switch on mobile data, then try again.',
+    prog: 100, step: 'Try again on mobile data', ip: ip,
+    btn: '🔁 TRY AGAIN', act: start,
+    btn2: '↩️ BACK TO THE BOT', act2: closeBot,
+    note: 'Wi-Fi hides your real address behind a router.' });
+}
+
+function noIp() {
+  buzz('error');
+  show({ cls: 'st-warn', title: 'IP not detected',
+    sub: 'The bot server did not receive this device address. Try again on mobile data.',
+    prog: 100, step: 'Not detected',
+    btn: '🔁 TRY AGAIN', act: start,
+    btn2: '↩️ BACK TO THE BOT', act2: closeBot });
+}
+
+function noLink() {
+  show({ cls: 'st-warn', title: 'Open this from the bot',
+    sub: 'This page only works when it is opened from the <b>Verify my IP</b> button inside the bot.',
+    prog: 0, step: 'Stopped', btn: '🔁 TRY AGAIN', act: start });
+}
+
+function blind(ip) {
+  show({ cls: 'st-warn', title: 'Request sent',
+    sub: 'The bot received your details. <b>Check the bot</b> — it tells you the result there.',
+    prog: 100, step: 'Waiting for the bot', ip: ip,
+    btn: '↩️ BACK TO THE BOT', act: closeBot,
+    btn2: '🔁 TRY AGAIN', act2: start,
+    note: 'The request was sent. The bot always confirms in Telegram.' });
+}
+
+/* ---------- router: true = handled ---------- */
+function render(st, ip, done, ver) {
+  var f = (String(done || '') === '1') || (String(ver || '') === '1');
+  if (st === 'success') { if (f) { ok(ip); } else { same(ip); } return true; }
+  if (st === 'already') { already(ip); return true; }
+  if (st === 'taken') { same(ip); return true; }
+  if (st === 'device_taken') { devTaken(ip); return true; }
+  if (st === 'suspended') { susp(ip); return true; }
+  if (st === 'local_ip') { local(ip); return true; }
+  if (st === 'no_ip') { noIp(); return true; }
+  if (st === '') { return false; }
+  noLink();
+  return true;
+}
+
+/* ---------- one same-origin call: no proxy, no CORS, no polling ---------- */
+function ask() {
+  var target = hook + (hook.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now() + '&dev=' + encodeURIComponent(DEV);
+  var opt = { cache: 'no-store' };
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 11000);
+    opt.signal = ctrl.signal;
+  } catch (e) {}
+
+  return fetch('/api/verify?u=' + encodeURIComponent(target), opt)
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      var d = null;
+      try { d = JSON.parse(txt); } catch (e) { d = null; }
+      if (d && typeof d.state !== 'undefined' && d.state !== '') { return d; }
+      throw new Error('unreadable');
+    });
+}
+
+/* the answer could not be read: ask the status link a few times, then stop */
+function askStatus(n) {
+  if (!okUrl(stat) || n > 2) { blind(''); return; }
+  load('Reading the result…');
+  var target = stat + (stat.indexOf('?') > -1 ? '&' : '?') + 'r=' + Date.now();
+  var opt = { cache: 'no-store' };
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 4000);
+    opt.signal = ctrl.signal;
+  } catch (e) {}
+
+  fetch('/api/stat?u=' + encodeURIComponent(target), opt)
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      var d = null;
+      try { d = JSON.parse(txt); } catch (e) { d = null; }
+      if (d && d.state && render(d.state, d.ip, d.done, d.verified)) { return; }
+      timer = setTimeout(function () { askStatus(n + 1); }, 700);
+    })
+    .catch(function () { timer = setTimeout(function () { askStatus(n + 1); }, 700); });
+}
+
+/* ---------- button ---------- */
+function start() {
+  if (busy) { return; }
+  busy = true;
+  if (timer) { clearTimeout(timer); }
+  buzz('light');
+
+  if (demo) {
+    load();
+    setTimeout(function () {
+      busy = false;
+      var ip = (demo === 'local_ip') ? '192.168.1.24' : '103.94.132.17';
+      if (demo === 'error') { noLink(); return; }
+      render(demo, ip, demo === 'success' ? '1' : '0', '');
+    }, 450);
+    return;
+  }
+
+  if (!okUrl(hook)) { busy = false; noLink(); return; }
+
+  load('Reading this device…');
+  ask()
+    .then(function (d) {
+      busy = false;
+      FILL.style.width = '90%';
+      if (!render(d.state, d.ip, d.done, d.verified)) { askStatus(1); }
+    })
+    .catch(function () { busy = false; askStatus(1); });
+}
 
 idle();
 </script>
